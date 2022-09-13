@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 
 	"github.com/Xebec19/simple-bank/util"
@@ -37,4 +38,13 @@ func TestUpdateEntries(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, entry2.Amount, amount1)
 	require.Equal(t, entry1.ID, entry2.ID)
+}
+
+func TestDeleteEntries(t *testing.T) {
+	entry1 := createTestEntry(t)
+	testQueries.DeleteEntries(context.Background(), entry1.ID)
+	entry2, err := testQueries.ReadEntry(context.Background(), entry1.ID)
+	require.Error(t, err)
+	require.EqualError(t, err, sql.ErrNoRows.Error())
+	require.Empty(t, entry2)
 }
