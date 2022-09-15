@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"testing"
+
 	_ "github.com/lib/pq"
 )
 
@@ -14,14 +15,16 @@ const (
 )
 
 var testQueries *Queries
+var testDB *sql.DB
 
 func TestMain(m *testing.M) {
-	conn, err := sql.Open(dbDriver, dbSource)
+	var err error
+	testDB, err = sql.Open(dbDriver, dbSource)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
-	testQueries = New(conn)
-	/* m.Run starts unit tests and returns whether tests pass or faile,
+	testQueries = New(testDB)
+	/* m.Run starts unit tests and returns whether tests pass or fail,
 	os.Exit() returns the result to test Runner
 	*/
 	os.Exit(m.Run())
