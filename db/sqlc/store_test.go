@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"golang.org/x/crypto/argon2"
 )
 
 func TestTransferTx(t *testing.T) {
@@ -50,5 +51,26 @@ func TestTransferTx(t *testing.T) {
 		require.NotZero(t, fromEntry.CreatedAt)
 		_, err = store.GetEntry(context.Background(), fromEntry.ID)
 		require.NoError(t, err)
+
+		// move money out of account 1
+		account, err := q.GetAccountForUpdate(ctx, arg.FromAccountID)
+		if err != nil {
+			return err
+		}
+		result.FromAccount, err = q.UpdateAccount(ctx, UpdateAccountParams{
+			ID:      arg.FromAccountID,
+			Balance: account1.Balance - arg.Amount,
+		})
+		if err != nil {
+			return err
+		}
+		account2, err := q.GetAccountForUpdate(ctx,UpdateAccountParams{
+			ID: arg.ToAccountID,
+			Balance: account2.Balance + arg.Amount,
+		})
+		if err != nil {
+			return err
+		}
+		return result,err
 	}
 }
