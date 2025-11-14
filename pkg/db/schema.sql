@@ -9,14 +9,14 @@ CREATE TYPE "status" AS ENUM (
 );
 
 CREATE TABLE "entries" (
-  "id" uuid PRIMARY KEY,
+  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   "account_id" uuid,
   "created_at" timestamp,
   "amount" int
 );
 
 CREATE TABLE "accounts" (
-  "id" uuid PRIMARY KEY,
+  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   "first_name" varchar(50),
   "last_name" varchar(50),
   "created_at" timestamp,
@@ -26,7 +26,7 @@ CREATE TABLE "accounts" (
 );
 
 CREATE TABLE "transactions" (
-  "id" uuid PRIMARY KEY,
+  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   "from_account" uuid,
   "to_account" uuid,
   "created_at" timestamp,
